@@ -172,5 +172,3 @@ setInterval(syncQuotes, 30000); // 30,000 ms = 30 seconds
 // Initialize the application
 createAddQuoteForm();
 showRandomQuote();
-
- 
