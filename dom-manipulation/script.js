@@ -141,7 +141,7 @@ async function syncQuotes() {
         const mergedQuotes = [...new Set([...localQuotes, ...serverQuotes])];
         localStorage.setItem('quotes', JSON.stringify(mergedQuotes));
 
-        notifyUser('Quotes synced with server. Any conflicts have been resolved.');
+        notifyUser('Quotes synced with server!'); // Notify user about sync
     } catch (error) {
         console.error('Error syncing quotes with server:', error);
     }
