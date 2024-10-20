@@ -21,12 +21,15 @@ function createAddQuoteForm() {
         <select id="categoryFilter" onchange="filterQuotes()">
             <option value="all">All Categories</option>
         </select>
+        <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+        <button id="exportButton">Export Quotes</button>
     `;
     document.body.appendChild(formContainer);
     populateCategories(); // Populate categories when form is created
 
     // Add event listener for adding a quote
     document.getElementById('addQuoteButton').addEventListener('click', addQuote);
+    document.getElementById('exportButton').addEventListener('click', exportToJsonFile); // Export quotes
 }
 
 // Function to add a new quote
@@ -168,6 +171,34 @@ function notifyUser(message) {
 
 // Periodically sync with server every 30 seconds
 setInterval(syncQuotes, 30000); // 30,000 ms = 30 seconds
+
+// Function to export quotes to a JSON file
+function exportToJsonFile() {
+    const dataStr = JSON.stringify(quotes, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quotes.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Function to import quotes from a JSON file
+function importFromJsonFile(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(event) {
+        const importedQuotes = JSON.parse(event.target.result);
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        populateCategories(); // Update categories dropdown after import
+        notifyUser('Quotes imported successfully!');
+    };
+    fileReader.readAsText(event.target.files[0]);
+}
 
 // Initialize the application
 createAddQuoteForm();
